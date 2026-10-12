@@ -8,8 +8,9 @@ description: Build a VOICE.md for the user - a description of how they write, wi
 The output is a `VOICE.md` that follows `spec.md`. Read the spec first - it's
 in the directory above this skill (`../spec.md`). The skill is usually
 symlinked in, so resolve the real path first (`readlink -f`). If it isn't
-there, ask the user where it is. Don't base the result on anyone else's voice doc, even if one
-is lying around: the only examples that belong in it are the user's own.
+there, ask the user where it is. Don't base the result on anyone else's voice
+doc, even if one is lying around: the only examples that belong in it are the
+user's own.
 
 ## 1. Collect the corpus
 
@@ -60,7 +61,24 @@ Show the user the suspect passages and let them say which are theirs. Anything
 they don't confirm gets dropped. When a source is mixed, keep only the parts
 they vouch for.
 
-## 3. Find the habits
+## 3. Hold some back
+
+Before reading for habits, set aside 15-20 vetted pieces as an eval set, spread
+across the registers you have: review comments, commits, PR descriptions,
+issues, the opening of a doc or update, replies on their own PRs, chat, a bit
+of code if you have any. Pick ordinary ones, not the most quotable.
+
+For each, write two things, in separate files in the scratchpad:
+
+- `eval/prompts.md` - the situation, with enough context to answer: the diff
+  hunk, what the change does and why, who said what. The facts, never the
+  wording.
+- `eval/refs.md` - what they actually wrote.
+
+These never get quoted in `VOICE.md`. If one turns out to be the perfect
+example for a habit, use it, and swap a fresh piece into the eval set.
+
+## 4. Find the habits
 
 Read the corpus register by register and look for what _recurs_: length,
 openings, how they hedge, how they disagree, how they praise, punctuation and
@@ -74,7 +92,7 @@ doesn't show.
 Don't clean up their text. Typos, missing full stops and lowercase are part of
 the voice, and "tightening" an example ruins it.
 
-## 4. Write VOICE.md
+## 5. Write VOICE.md
 
 Follow the spec for structure and the example format. For every habit:
 
@@ -97,8 +115,56 @@ Then make it safe to publish:
 Tell the user every translation you made, as a table, and anything you left in
 that they might want to change.
 
-## 5. Iterate
+## 6. Evaluate and refine
+
+Test the doc the way it'll be used: a fresh agent, with nothing but the doc.
+
+Spawn a new general-purpose subagent - not a fork, it mustn't inherit your
+context. Tell it to read exactly two files, `VOICE.md` and `eval/prompts.md`,
+and nothing else: no other files, no directory listings, no git, gh or web,
+because `eval/refs.md` holds the answers. It writes what the person would post
+for each prompt to `eval/outputs-N.md`, and nothing more.
+
+Then compare each output against the reference. Don't score how good it is -
+score how _similar_ it is:
+
+- Length and shape: one line or several, prose or bullets, heading or none.
+- How it opens, and how it ends.
+- Hedging, questions, tag questions, how disagreement is softened.
+- Emoji, punctuation, capitals, emphasis, dashes.
+- Whether it added things the person wouldn't have said, or dropped what they
+  would - an alternative named, a joke, an admission.
+
+Look for patterns, not one-offs. Something wrong in the same direction across
+several outputs is the doc teaching it badly. Count what you can count: how
+many outputs have an emoji versus how many references do, and how many of the
+doc's ✅ examples do.
+
+Fix the cause in `VOICE.md`, not the symptom:
+
+- A habit the outputs miss gets a paragraph and a real example.
+- A habit they overdo usually comes from the examples, not the prose -
+  examples teach _how often_. Say how rare it is, and rebalance the ✅s with
+  equally real ones that don't have it.
+- A rule they over-apply needs its limits spelled out, with an example of the
+  other side.
+
+Then run it again with another fresh agent, same prompts, a new outputs file.
+Keep a short scoreboard per round (e.g. "emoji: 9/19 → 6/19, real: 1/19") so
+it's obvious whether a change helped. Stop when a round stops improving, or
+after three or four. Past that you're overfitting to the eval set - if you
+want to keep going, add fresh held-out pieces.
+
+If a lesson isn't about this person but about voice docs in general (like
+"examples teach frequency"), propose it as a change to `spec.md` too, and
+show the user the diff.
+
+Show the user the scoreboard and the side-by-sides worth seeing. Not all of
+them, just the ones that tell them something.
+
+## 7. Iterate with the user
 
 Show the user the draft and expect corrections - they will know when something
-doesn't sound like them. Before every edit, re-read the file: they will be
-editing it by hand too, and those edits shouldn't get reverted.
+doesn't sound like them, and that beats any eval. Before every edit, re-read
+the file: they will be editing it by hand too, and those edits shouldn't get
+reverted. After a big round of changes, run the eval again.
