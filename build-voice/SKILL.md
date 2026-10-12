@@ -1,11 +1,11 @@
 ---
 name: build-voice
-description: Build a voice.md for the user - a description of how they write, with paired examples - from a corpus of their own hand-written text (GitHub, Linear, Google Docs, Notion, chat). Use when the user wants to capture their writing voice, or asks to create/update a voice doc.
+description: Build a VOICE.md for the user - a description of how they write, with paired examples - from a corpus of their own hand-written text (GitHub, Linear, Google Docs, Notion, chat). Use when the user wants to capture their writing voice, or asks to create/update a voice doc.
 ---
 
 # Build a voice doc
 
-The output is a `voice.md` that follows `spec.md`. Read the spec first - it's
+The output is a `VOICE.md` that follows `spec.md`. Read the spec first - it's
 in the directory above this skill (`../spec.md`). The skill is usually
 symlinked in, so resolve the real path first (`readlink -f`). If it isn't
 there, ask the user where it is. Don't base the result on anyone else's voice doc, even if one
@@ -74,7 +74,7 @@ doesn't show.
 Don't clean up their text. Typos, missing full stops and lowercase are part of
 the voice, and "tightening" an example ruins it.
 
-## 4. Write voice.md
+## 4. Write VOICE.md
 
 Follow the spec for structure and the example format. For every habit:
 
