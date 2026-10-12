@@ -6,8 +6,9 @@ description: Build a voice.md for the user - a description of how they write, wi
 # Build a voice doc
 
 The output is a `voice.md` that follows `spec.md`. Read the spec first - it's
-in the directory above this skill (`../spec.md`). If it isn't there, ask the
-user where it is. Don't base the result on anyone else's voice doc, even if one
+in the directory above this skill (`../spec.md`). The skill is usually
+symlinked in, so resolve the real path first (`readlink -f`). If it isn't
+there, ask the user where it is. Don't base the result on anyone else's voice doc, even if one
 is lying around: the only examples that belong in it are the user's own.
 
 ## 1. Collect the corpus
